@@ -22,7 +22,7 @@ import com.mygdx.game.sprite.Star;
 public class MenuScreen extends Base2DScreen {
 
     private Background background;
-    //  private Star star;
+    private Texture[] bg;
     private Buttons startButton, exitButton;
     private Star[] stars;
     private TextureAtlas atlas;
@@ -35,23 +35,20 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void show() {
         super.show();
-        Texture[] bg = new Texture[]{   //  варианты фонов
+        bg = new Texture[]{   //  варианты фонов
                 new Texture("textures/bg.png"),
                 new Texture("background/heic0406a.jpg"),
                 new Texture("background/heic1313b.jpg"),
                 new Texture("background/heic0602a.jpg"),
                 new Texture("background/heic0817a.jpg"),
         };
-
-//        background = new Background(new TextureRegion(bg));
-        background = new Background(new TextureRegion(bg[(int) Math.round(Math.random() * (bg.length - 1))])); //рандомный выбор фона при старте
+        changeBackground();
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
         TextureRegion starRegion = atlas.findRegion("star");
         TextureRegion btPlay = atlas.findRegion("btPlay");
         TextureRegion btExit = atlas.findRegion("btExit");
         startButton = new Buttons(btPlay, 0.1f);
         exitButton = new Buttons(btExit, 0.075f);
-        //  star = new Star(starRegion, Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.5f, -0.1f), 0.01f);
         stars = new Star[256];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(starRegion, Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.5f, -0.1f), Rnd.nextFloat(0.009f, 0.001f));
@@ -66,20 +63,18 @@ public class MenuScreen extends Base2DScreen {
     }
 
     public void update(float delta) {
-        //  star.update(delta);
         for (Star star : stars) star.update(delta);
         startButton.update(delta);
         exitButton.update(delta);
     }
 
     public void draw() {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         rotateBackground();
         background.draw(batch);
         for (Star star : stars) star.draw(batch);
-        //  star.draw(batch);
         startButton.draw(batch);
         exitButton.draw(batch);
         batch.end();
@@ -87,7 +82,6 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public void dispose() {
-//        bg.dispose();
         atlas.dispose();
         super.dispose();
     }
@@ -97,7 +91,6 @@ public class MenuScreen extends Base2DScreen {
         super.touchDown(touch, pointer);
         if (startButton.isMe(touch)) startButton.setScale(0.9f);
         if (exitButton.isMe(touch)) exitButton.setScale(0.9f);
-
     }
 
     @Override
@@ -110,9 +103,7 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
-        //  background.resize(worldBounds);
         background.setHeightProportion((worldBounds.getHeight() / worldBounds.getWidth()));
-        //  star.resize(worldBounds);
         for (Star star : stars) star.resize(worldBounds);
         startButton.resize(worldBounds, -0.1f, -0.1f);
         exitButton.resize(worldBounds, 0.1f, -0.085f);
@@ -123,7 +114,17 @@ public class MenuScreen extends Base2DScreen {
         if (rotateAngle < 360 && rotateAngle >= 0) {
             background.setAngle(rotateAngle);
             rotateAngle += 0.005f;
-//            rotateAngle += 1f;
         } else rotateAngle = 0;
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        changeBackground();
+    }
+
+    // Смена бэкграунда при паузе игры.
+    public void changeBackground() {
+        background = new Background(new TextureRegion(bg[(int) Math.round(Math.random() * (bg.length - 1))]));
     }
 }
