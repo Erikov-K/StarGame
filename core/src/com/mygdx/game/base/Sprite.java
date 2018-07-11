@@ -1,9 +1,11 @@
 package com.mygdx.game.base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.math.Rect;
+import com.mygdx.game.utils.Regions;
 
 /**
  * Спрайт
@@ -16,13 +18,19 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame;
 
-
     public Sprite(TextureRegion region) {
         if (region == null) {
             throw new NullPointerException();
         }
         regions = new TextureRegion[1];
         regions[0] = region;
+    }
+
+    public Sprite(TextureRegion region, int rows, int cols, int frames) {
+        if (region == null) {
+            throw new NullPointerException();
+        }
+        regions = Regions.split(region, rows, cols, frames);
     }
 
     public void draw(SpriteBatch batch) {
@@ -49,6 +57,9 @@ public class Sprite extends Rect {
     }
 
     public void touchUp(Vector2 touch, int pointer) {
+    }
+
+    public void touchDragged(Vector2 touch, int pointer) {
     }
 
     public void update(float delta) {

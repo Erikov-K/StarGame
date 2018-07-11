@@ -1,5 +1,6 @@
 package com.mygdx.game.sprite;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import com.mygdx.game.base.Sprite;
@@ -17,4 +18,6 @@ public class Background extends Sprite {
         setHeightProportion(worldBounds.getHeight());
         pos.set(worldBounds.pos);
     }
+
+
 }

@@ -34,7 +34,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         this.game = game;
         this.screenBounds = new Rect();
         this.worldBounds = new Rect();
-        this.glBounds = new Rect(0,0, 1f, 1f); // инициализация GL-координат
+        this.glBounds = new Rect(0, 0, 1f, 1f); // инициализация GL-координат
         this.worldToGl = new Matrix4();
         this.screenToWorld = new Matrix3();
         Gdx.input.setInputProcessor(this);

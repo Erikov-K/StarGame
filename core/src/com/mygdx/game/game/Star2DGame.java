@@ -1,6 +1,7 @@
 package com.mygdx.game.game;
 
 import com.badlogic.gdx.Game;
+import com.mygdx.game.base.Base2DScreen;
 import com.mygdx.game.screen.MenuScreen;
 
 /**
