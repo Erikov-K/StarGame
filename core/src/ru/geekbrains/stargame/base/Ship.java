@@ -1,5 +1,7 @@
 package ru.geekbrains.stargame.base;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,6 +24,8 @@ public class Ship extends Sprite {
     protected float reloadInterval;
     protected float reloadTimer;
 
+    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/shoot.wav"));
+
     public Ship(BulletPool bulletPool, Rect worldBounds) {
         this.bulletPool = bulletPool;
         this.worldBounds = worldBounds;
@@ -39,5 +43,8 @@ public class Ship extends Sprite {
     protected void shoot() {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, bulletDamage);
+        sound.play(0.3f);
     }
+
+
 }

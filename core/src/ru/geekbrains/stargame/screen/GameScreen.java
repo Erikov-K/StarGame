@@ -2,6 +2,7 @@ package ru.geekbrains.stargame.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -39,6 +40,8 @@ public class GameScreen extends Base2DScreen {
 
     private EnemiesEmitter enemiesEmitter;
 
+    Music music = Gdx.audio.newMusic(Gdx.files.internal("sounds/Star_Wars_-_Soundtrack_(DemoLat.net).mp3"));
+
     public GameScreen(Game game) {
         super(game);
     }
@@ -59,6 +62,9 @@ public class GameScreen extends Base2DScreen {
         mainShip = new MainShip(atlas, bulletPool);
         enemyPool = new EnemyPool(bulletPool, worldBounds);
         this.enemiesEmitter = new EnemiesEmitter(worldBounds, enemyPool, atlas);
+        music.setVolume(0.2f);
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -119,6 +125,7 @@ public class GameScreen extends Base2DScreen {
         atlas.dispose();
         bulletPool.dispose();
         enemyPool.dispose();
+        music.dispose();
         super.dispose();
     }
 
