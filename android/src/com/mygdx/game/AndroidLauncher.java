@@ -1,10 +1,10 @@
-package com.mygdx.game;
+package ru.geekbrains.stargame.game;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.mygdx.game.game.Star2DGame;
+import ru.geekbrains.stargame.game.Star2DGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
