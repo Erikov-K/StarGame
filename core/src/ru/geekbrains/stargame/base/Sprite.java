@@ -40,6 +40,9 @@ public class Sprite extends Rect {
     }
 
     public void draw(SpriteBatch batch) {
+        if (isDestroyed) {
+            return;
+        }
         batch.draw(
                 regions[frame], // текущий регион
                 getLeft(), getBottom(), // точка отрисовки
