@@ -37,7 +37,8 @@ public class MainShip extends Ship {
         this.bulletDamage = 1;
         this.reloadInterval = 0.2f;
         this.explosionPool = explosionPool;
-        this.hp = 100;
+//        this.hp = 100;
+        this.hp = 1;
     }
 
     @Override

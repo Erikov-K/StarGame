@@ -39,7 +39,6 @@ public class MenuScreen extends Base2DScreen implements ActionListener {
     private ButtonExit buttonExit;
     private ButtonPlay buttonPlay;
 
-
     public MenuScreen(Game game) {
         super(game);
     }

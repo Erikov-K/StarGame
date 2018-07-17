@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 
+import ru.geekbrains.stargame.base.ActionListener;
 import ru.geekbrains.stargame.base.Base2DScreen;
 import ru.geekbrains.stargame.math.Rect;
 import ru.geekbrains.stargame.math.Rnd;
@@ -21,13 +22,24 @@ import ru.geekbrains.stargame.pools.ExplosionPool;
 import ru.geekbrains.stargame.sprite.Background;
 import ru.geekbrains.stargame.sprite.Bullet;
 import ru.geekbrains.stargame.sprite.Enemy;
-import ru.geekbrains.stargame.sprite.Explosion;
+import ru.geekbrains.stargame.sprite.GameOver;
 import ru.geekbrains.stargame.sprite.MainShip;
+import ru.geekbrains.stargame.sprite.NewGame;
 import ru.geekbrains.stargame.sprite.Star;
 import ru.geekbrains.stargame.utils.EnemiesEmitter;
 
 
-public class GameScreen extends Base2DScreen {
+public class GameScreen extends Base2DScreen implements ActionListener {
+
+    private enum MainShipState {LIVE, DEAD}
+
+    private MainShipState mainShipState;
+
+    private NewGame newGame;
+    private GameOver gameOver;
+
+    private static final float PRESS_SCALE = 0.9f;
+    private static final float BUTTON_HEIGHT = 0.05f;
 
     private static final int STAR_COUNT = 56;
     private static final float STAR_HEIGHT = 0.01f;
@@ -36,7 +48,6 @@ public class GameScreen extends Base2DScreen {
     private Texture bg;
     private Star star[];
     private TextureAtlas atlas;
-
     private MainShip mainShip;
 
     private BulletPool bulletPool;
@@ -75,9 +86,14 @@ public class GameScreen extends Base2DScreen {
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosionSound);
         mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
+        mainShipState = MainShipState.LIVE;
         enemyPool = new EnemyPool(bulletPool, worldBounds, explosionPool, mainShip, bulletSound);
         enemiesEmitter = new EnemiesEmitter(worldBounds, enemyPool, atlas);
 
+        newGame = new NewGame(atlas, this, PRESS_SCALE);
+        newGame.setHeightProportion(BUTTON_HEIGHT);
+        gameOver = new GameOver(atlas, this, PRESS_SCALE);
+        gameOver.setHeightProportion(BUTTON_HEIGHT * 1.5f);
     }
 
     @Override
@@ -93,11 +109,33 @@ public class GameScreen extends Base2DScreen {
         for (int i = 0; i < star.length; i++) {
             star[i].update(delta);
         }
-        mainShip.update(delta);
-        bulletPool.updateActiveSprites(delta);
-        enemyPool.updateActiveSprites(delta);
-        explosionPool.updateActiveSprites(delta);
-        enemiesEmitter.generateEnemies(delta);
+        switch (mainShipState) {
+            case DEAD: {
+                if (mainShip.getHp() <= 0) {
+                    // Do something
+                    explosionPool.updateActiveSprites(delta);
+                    newGame.update(delta);
+                    gameOver.update(delta);
+                }
+                break;
+            }
+            case LIVE: {
+                mainShip.update(delta);
+                bulletPool.updateActiveSprites(delta);
+                enemyPool.updateActiveSprites(delta);
+                explosionPool.updateActiveSprites(delta);
+                enemiesEmitter.generateEnemies(delta);
+                if (mainShip.getHp() <= 0) {
+                    enemyPool.freeAllDestroyedActiveSprites();
+                    bulletPool.freeAllDestroyedActiveSprites();
+                    explosionPool.freeAllDestroyedActiveSprites();
+                    mainShipState = MainShipState.DEAD;
+                    enemyPool.dispose();
+                    bulletPool.dispose();
+                    mainShip.destroy();
+                }
+            }
+        }
     }
 
     public void draw() {
@@ -108,10 +146,23 @@ public class GameScreen extends Base2DScreen {
         for (int i = 0; i < star.length; i++) {
             star[i].draw(batch);
         }
-        mainShip.draw(batch);
-        bulletPool.drawActiveSprites(batch);
-        enemyPool.drawActiveSprites(batch);
-        explosionPool.drawActiveSprites(batch);
+        switch (mainShipState) {
+            case DEAD: {
+                // Do something
+                explosionPool.drawActiveSprites(batch);
+                newGame.draw(batch);
+                gameOver.draw(batch);
+                break;
+            }
+            case LIVE: {
+                mainShip.draw(batch);
+                bulletPool.drawActiveSprites(batch);
+                enemyPool.drawActiveSprites(batch);
+                explosionPool.drawActiveSprites(batch);
+                break;
+            }
+        }
+
         batch.end();
     }
 
@@ -171,6 +222,8 @@ public class GameScreen extends Base2DScreen {
             star[i].resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        newGame.resize(worldBounds);
+        gameOver.resize(worldBounds);
     }
 
     @Override
@@ -202,10 +255,21 @@ public class GameScreen extends Base2DScreen {
     @Override
     public void touchDown(Vector2 touch, int pointer) {
         mainShip.touchDown(touch, pointer);
+        newGame.touchDown(touch, pointer);
     }
 
     @Override
     public void touchUp(Vector2 touch, int pointer) {
         mainShip.touchUp(touch, pointer);
+        newGame.touchUp(touch, pointer);
+    }
+
+    @Override
+    public void actionPerformed(Object src) {
+        if (src == newGame) {
+            game.setScreen(new GameScreen(game));
+        } else {
+            throw new RuntimeException("Unknown src");
+        }
     }
 }
