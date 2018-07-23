@@ -27,18 +27,24 @@ public class MainShip extends Ship {
 
 
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound sound) {
-        super(atlas.findRegion("main_ship"), 1, 2, 2, sound );
+    public MainShip(TextureAtlas atlas, Rect worldBounds, BulletPool bulletPool, ExplosionPool explosionPool, Sound sound) {
+        super(atlas.findRegion("main_ship"), 1, 2, 2, sound, worldBounds);
         setHeightProportion(SHIP_HEIGHT);
         this.bulletPool = bulletPool;
         this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.explosionPool = explosionPool;
+        this.worldBounds = worldBounds;
+        setToNewGame();
+    }
+
+    public void setToNewGame() {
+        pos.x = worldBounds.pos.x;
         this.bulletHeight = 0.01f;
         this.bulletV.set(0, 0.5f);
         this.bulletDamage = 1;
         this.reloadInterval = 0.2f;
-        this.explosionPool = explosionPool;
-//        this.hp = 100;
-        this.hp = 1;
+        this.hp = 100;
+        flushDestroy();
     }
 
     @Override

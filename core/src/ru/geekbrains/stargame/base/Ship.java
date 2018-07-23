@@ -40,7 +40,7 @@ public class Ship extends Sprite {
         this.shootSound = sound;
     }
 
-    public Ship(TextureRegion region, int rows, int cols, int frames, Sound sound) {
+    public Ship(TextureRegion region, int rows, int cols, int frames, Sound sound, Rect worldBounds) {
         super(region, rows, cols, frames);
         this.shootSound = sound;
     }
@@ -68,6 +68,7 @@ public class Ship extends Sprite {
     public void boom() {
         Explosion explosion = explosionPool.obtain();
         explosion.set(getHeight()*(float)1.5, pos);
+        hp = 0;
     }
 
     public void damage(int damage) {

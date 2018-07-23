@@ -12,8 +12,6 @@ public class ButtonExit extends ScaledTouchUpButton {
         super(atlas.findRegion("btExit"), actionListener, pressScale);
     }
 
-
-
     @Override
     public void resize(Rect worldBounds) {
         setBottom(worldBounds.getBottom());

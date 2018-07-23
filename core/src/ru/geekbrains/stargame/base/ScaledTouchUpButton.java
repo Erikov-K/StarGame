@@ -19,12 +19,12 @@ public class ScaledTouchUpButton extends Sprite {
 
     @Override
     public void touchDown(Vector2 touch, int pointer) {
-        if (pressed || !isMe(touch)) {
-            return;
-        }
-        this.pointer = pointer;
-        this.scale = pressScale;
-        this.pressed = true;
+       if (pressed || !isMe(touch)) {
+           return;
+       }
+       this.pointer = pointer;
+       this.scale = pressScale;
+       this.pressed = true;
     }
 
     @Override
